@@ -1,0 +1,43 @@
+<template>
+  <div class="layout">
+    <AppHeader @show-login="openLogin" />
+    <LoginModal :visible="showLogin" @close="showLogin = false" :key="modalKey" />
+    <main class="main-content">
+      <router-view />
+    </main>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+import AppHeader from '@/components/AppHeader.vue'
+import LoginModal from '@/components/LoginModal.vue'
+
+export default Vue.extend({
+  components: { AppHeader, LoginModal },
+  data() {
+    return {
+      showLogin: false,
+      modalKey: 0
+    }
+  },
+  methods: {
+    openLogin() {
+      this.modalKey++
+      this.showLogin = true
+    }
+  }
+})
+</script>
+
+<style scoped>
+.layout {
+  background-color: #f3f3f3;
+  min-height: 100vh;
+}
+
+.main-content {
+  display: flex;
+  justify-content: center;
+}
+</style>
