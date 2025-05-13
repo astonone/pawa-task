@@ -10,8 +10,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import AppHeader from '@/components/AppHeader.vue'
-import LoginModal from '@/components/LoginModal.vue'
+import AppHeader from '@/components/main/AppHeader.vue'
+import LoginModal from '@/components/login-modal/LoginModal.vue'
 
 export default Vue.extend({
   components: { AppHeader, LoginModal },

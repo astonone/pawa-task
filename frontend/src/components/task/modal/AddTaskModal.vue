@@ -65,6 +65,13 @@ export default Vue.extend({
       }
     }
   },
+  watch: {
+    visible(newVal: boolean) {
+      if (newVal) {
+        this.resetForm()
+      }
+    }
+  },
   methods: {
     resetForm() {
       this.title = ''
@@ -111,7 +118,6 @@ export default Vue.extend({
           ] : []
         })
 
-        this.resetForm();
         this.$emit('close')
         this.$emit('task-created')
       } catch (err: unknown) {

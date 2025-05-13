@@ -7,6 +7,7 @@ import com.pawatask.task_service.repository.TaskRepository;
 import com.pawatask.task_service.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,9 +32,15 @@ public class TaskController {
     public TaskDto createTask(
             @Valid
             @RequestBody Task task,
-            @RequestHeader("Authorization") String authHeader
+            @RequestHeader("Authorization") String token
     ) {
-        Task saved = taskService.createTask(task, authHeader);
+        Task saved = taskService.createTask(task, token);
         return TaskMapper.toDto(saved);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody @Valid TaskDto dto, @RequestHeader("Authorization") String token) {
+        taskService.updateTask(id, dto, token);
+        return ResponseEntity.ok().build();
     }
 }

@@ -25,7 +25,7 @@
         </div>
       </template>
       <template v-else>
-        <TaskItem v-for="t in tasks" :key="t.id" :task="t" :canEdit="isAuthenticated" />
+        <TaskItem v-for="t in tasks" :key="t.id" :task="t" :canEdit="isAuthenticated" @task-updated="reloadTasks"/>
       </template><template v-if="loadError">
       <div class="empty-state error">
         <p>⚠️ Failed to load tasks. Please try again later.</p>
@@ -38,9 +38,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import {taskApi} from "@/plugins/axios";
-import TaskItem from "@/components/TaskItem.vue";
+import TaskItem from "@/components/task/TaskItem.vue";
 import {mapGetters} from "vuex";
-import AddTaskModal from "@/components/AddTaskModal.vue";
+import AddTaskModal from "@/components/task/modal/AddTaskModal.vue";
 
 export default Vue.extend({
   name: 'TaskView',

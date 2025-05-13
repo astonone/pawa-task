@@ -8,7 +8,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import MainLayout from '@/layouts/MainLayout.vue'
-import SessionExpiredModal from "@/components/SessionExpiredModal.vue";
+import SessionExpiredModal from "@/components/login-modal/SessionExpiredModal.vue";
 
 export default Vue.extend({
   components: {SessionExpiredModal, MainLayout },

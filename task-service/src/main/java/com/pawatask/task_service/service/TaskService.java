@@ -1,9 +1,11 @@
 package com.pawatask.task_service.service;
 
 import com.pawatask.task_service.client.UserClient;
+import com.pawatask.task_service.dto.TaskDto;
 import com.pawatask.task_service.dto.UserInfo;
 import com.pawatask.task_service.model.Task;
 import com.pawatask.task_service.repository.TaskRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,5 +27,20 @@ public class TaskService {
         }
 
         return taskRepository.save(task);
+    }
+
+    public void updateTask(Long id, TaskDto dto, String token) {
+        UserInfo user = userClient.getCurrentUser(token);
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found"));
+
+        task.setTitle(dto.getTitle());
+        task.setDescription(dto.getDescription());
+        task.setPriority(dto.getPriority());
+        task.setTodoDate(dto.getTodoDate());
+        task.setLastEditedBy(user.getUsername());
+
+        taskRepository.save(task);
     }
 }

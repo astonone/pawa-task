@@ -32,10 +32,17 @@
             class="btn"
             :class="{ disabled: !canEdit }"
             :disabled="!canEdit"
+            @click="openEditModal"
         >
           <i class="fas fa-edit"></i>
         </button>
       </span>
+      <EditTaskModal
+          :visible="showEdit"
+          :task="task"
+          @close="showEdit = false"
+          @task-updated="$emit('task-updated')"
+      />
     </div>
   </div>
 </template>
@@ -43,8 +50,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import {TaskDto} from "@/types/tasks";
+import EditTaskModal from "@/components/task/modal/EditTaskModal.vue";
 
 export default Vue.extend({
+  components: {EditTaskModal},
   props: {
     task: {
       type: Object as () => TaskDto,
@@ -53,6 +62,18 @@ export default Vue.extend({
     canEdit: {
       type: Boolean,
       required: true
+    }
+  },
+  data() {
+    return {
+      showEdit: false
+    }
+  },
+  methods: {
+    openEditModal() {
+      if (this.canEdit) {
+        this.showEdit = true
+      }
     }
   },
   computed: {
