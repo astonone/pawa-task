@@ -3,14 +3,15 @@
     <div class="container">
       <header class="header">
         <h1 class="title">PawaTask</h1>
-        <button class="new-task-btn">Add a new task</button>
+        <button class="new-task-btn" @click="showModal = true">Add a new task</button>
       </header>
 
+      <AddTaskModal :visible="showModal" @close="showModal = false" />
       <template v-if="tasks.length === 0">
         <div class="empty-state">
           <p>
             You do not have any tasks
-            <a href="#">add a new task</a>
+            <a href="#" @click.prevent="showModal = true">add a new task</a>
           </p>
         </div>
       </template>
@@ -26,13 +27,15 @@ import Vue from 'vue';
 import {taskApi} from "@/plugins/axios";
 import TaskItem from "@/components/TaskItem.vue";
 import {mapGetters} from "vuex";
+import AddTaskModal from "@/components/AddTaskModal.vue";
 
 export default Vue.extend({
   name: 'TaskView',
-  components: {TaskItem},
+  components: {TaskItem, AddTaskModal},
   data() {
     return {
-      tasks: []
+      tasks: [],
+      showModal: false
     }
   },
   async mounted() {
