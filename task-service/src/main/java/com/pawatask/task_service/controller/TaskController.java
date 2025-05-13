@@ -5,6 +5,7 @@ import com.pawatask.task_service.mapper.TaskMapper;
 import com.pawatask.task_service.model.Task;
 import com.pawatask.task_service.repository.TaskRepository;
 import com.pawatask.task_service.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ public class TaskController {
 
     @PostMapping
     public TaskDto createTask(
+            @Valid
             @RequestBody Task task,
             @RequestHeader("Authorization") String authHeader
     ) {

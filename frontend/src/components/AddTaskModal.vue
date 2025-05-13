@@ -32,6 +32,7 @@
 
         <label>Comments:</label>
         <textarea v-model="comments" rows="2" />
+        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
         <button type="submit" class="submit-btn">Add a new task</button>
       </form>
@@ -41,6 +42,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {taskApi} from "@/plugins/axios";
+import {AxiosError} from "axios";
 
 export default Vue.extend({
   props: {
@@ -55,6 +58,7 @@ export default Vue.extend({
       year: '',
       priority: 'LOW',
       comments: '',
+      errorMessage: '',
       errors: {
         title: '',
         date: ''
@@ -62,17 +66,63 @@ export default Vue.extend({
     }
   },
   methods: {
-    handleSubmit() {
-      this.errors.title = this.title.trim() ? '' : 'Title is required'
-      const isValidDate = /^\d{2}$/.test(this.day) &&
+    resetForm() {
+      this.title = ''
+      this.description = ''
+      this.day = ''
+      this.month = ''
+      this.year = ''
+      this.priority = 'LOW'
+      this.comments = ''
+      this.errors = {
+        title: '',
+        date: ''
+      }
+    },
+    async handleSubmit() {
+      this.errorMessage = ''
+      this.errors = { title: '', date: '' }
+
+      if (!this.title.trim()) {
+        this.errors.title = 'Title is required'
+      }
+
+      const isValidDate =
+          /^\d{2}$/.test(this.day) &&
           /^\d{2}$/.test(this.month) &&
           /^\d{4}$/.test(this.year)
 
-      this.errors.date = isValidDate ? '' : 'Invalid date'
+      if (!isValidDate) {
+        this.errors.date = 'Invalid date'
+      }
 
       if (this.errors.title || this.errors.date) return
 
-      console.log('✅ Valid data, ready to send')
+      const todoDate = `${this.year}-${this.month}-${this.day}T12:00:00`
+
+      try {
+        await taskApi.post('/tasks', {
+          title: this.title,
+          description: this.description,
+          todoDate,
+          priority: this.priority,
+          comments: this.comments ? [
+            { text: this.comments }
+          ] : []
+        })
+
+        this.resetForm();
+        this.$emit('close')
+        this.$emit('task-created')
+      } catch (err: unknown) {
+        const axiosErr = err as AxiosError
+
+        if ((axiosErr.response?.data as any)?.message) {
+          this.errorMessage = (axiosErr.response?.data as any).message
+        } else {
+          this.errorMessage = 'Something went wrong. Please try again later.'
+        }
+      }
     }
   }
 })

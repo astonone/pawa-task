@@ -15,7 +15,7 @@
       </span>
       </header>
 
-      <AddTaskModal :visible="showModal" @close="showModal = false" />
+      <AddTaskModal :visible="showModal" @close="showModal = false" @task-created="reloadTasks"/>
       <template v-if="tasks.length === 0 && !loadError">
         <div class="empty-state">
           <p>
@@ -58,6 +58,16 @@ export default Vue.extend({
       this.tasks = res.data
     } catch (e) {
       this.loadError = true
+    }
+  },
+  methods: {
+    async reloadTasks() {
+      try {
+        const res = await taskApi.get('/tasks')
+        this.tasks = res.data
+      } catch {
+        this.loadError = true
+      }
     }
   },
   computed: {
