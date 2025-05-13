@@ -28,8 +28,11 @@
 .container {
   background-color: white;
   padding: 30px;
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  margin: 0 16px;
 }
 
 .header {
@@ -72,6 +75,22 @@
 
 .empty-state a:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 20px;
+  }
+
+  .new-task-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
+@media (min-width: 768px) {
+  .container {
+    width: 500px;
+  }
 }
 </style>
 

@@ -41,23 +41,27 @@ export default Vue.extend({
   border-bottom: 1px solid #ddd;
   padding: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 .header-content {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 .auth {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
 .user-info {
   font-weight: bold;
 }
-
 .auth-btn {
+  white-space: nowrap;
   background-color: #f04f3e;
   color: white;
   border: none;
@@ -66,9 +70,13 @@ export default Vue.extend({
   cursor: pointer;
   border-radius: 0;
 }
-
 .auth-btn:hover {
   background-color: #d33a2f;
 }
-
+@media (max-width: 480px) {
+  .auth-btn {
+    padding: 4px 10px;
+    font-size: 14px;
+  }
+}
 </style>

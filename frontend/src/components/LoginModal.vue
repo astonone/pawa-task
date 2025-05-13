@@ -158,8 +158,11 @@ export default Vue.extend({
   background: white;
   padding: 24px;
   border-radius: 4px;
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+  margin: 0 16px;
 }
 .header {
   display: flex;
