@@ -7,7 +7,7 @@
       </header>
 
       <AddTaskModal :visible="showModal" @close="showModal = false" />
-      <template v-if="tasks.length === 0">
+      <template v-if="tasks.length === 0 && !loadError">
         <div class="empty-state">
           <p>
             You do not have any tasks
@@ -17,7 +17,11 @@
       </template>
       <template v-else>
         <TaskItem v-for="t in tasks" :key="t.id" :task="t" :canEdit="isAuthenticated" />
-      </template>
+      </template><template v-if="loadError">
+      <div class="empty-state error">
+        <p>⚠️ Failed to load tasks. Please try again later.</p>
+      </div>
+    </template>
     </div>
   </div>
 </template>
@@ -35,12 +39,17 @@ export default Vue.extend({
   data() {
     return {
       tasks: [],
-      showModal: false
+      showModal: false,
+      loadError: false
     }
   },
   async mounted() {
-    const res = await taskApi.get('/tasks')
-    this.tasks = res.data
+    try {
+      const res = await taskApi.get('/tasks')
+      this.tasks = res.data
+    } catch (e) {
+      this.loadError = true
+    }
   },
   computed: {
     ...mapGetters('auth', ['isAuthenticated'])

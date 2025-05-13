@@ -26,6 +26,12 @@ export default Vue.extend({
       this.modalKey++
       this.showLogin = true
     }
+  },
+  created() {
+    this.$root.$on('show-login', this.openLogin)
+  },
+  beforeDestroy() {
+    this.$root.$off('show-login', this.openLogin)
   }
 })
 </script>
