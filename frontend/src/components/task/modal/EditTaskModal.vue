@@ -2,7 +2,7 @@
   <div class="overlay" v-if="visible">
     <div class="modal">
       <div class="modal-header">
-        <h2>Edit task</h2>
+        <h2>Edit task: {{title}}</h2>
         <button class="close-btn" @click="$emit('close')">×</button>
       </div>
 
