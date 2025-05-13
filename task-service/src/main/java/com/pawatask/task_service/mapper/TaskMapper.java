@@ -32,6 +32,30 @@ public class TaskMapper {
         dto.setId(comment.getId());
         dto.setText(comment.getText());
         dto.setAuthor(comment.getAuthor());
+        dto.setCreatedAt(comment.getCreatedAt());
         return dto;
+    }
+
+    public static Task fromDto(TaskDto dto) {
+        Task task = new Task();
+        task.setTitle(dto.getTitle());
+        task.setDescription(dto.getDescription());
+        task.setTodoDate(dto.getTodoDate());
+        task.setPriority(dto.getPriority());
+
+        if (dto.getComments() != null) {
+            task.setComments(dto.getComments().stream()
+                    .map(TaskMapper::commentFromDto)
+                    .collect(Collectors.toList()));
+        }
+
+        return task;
+    }
+
+    private static Comment commentFromDto(CommentDto dto) {
+        Comment comment = new Comment();
+        comment.setText(dto.getText());
+        comment.setAuthor(dto.getAuthor());
+        return comment;
     }
 }

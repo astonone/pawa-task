@@ -3,6 +3,7 @@ package com.pawatask.task_service.service;
 import com.pawatask.task_service.client.UserClient;
 import com.pawatask.task_service.dto.TaskDto;
 import com.pawatask.task_service.dto.UserInfo;
+import com.pawatask.task_service.mapper.TaskMapper;
 import com.pawatask.task_service.model.Task;
 import com.pawatask.task_service.repository.TaskRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,14 +17,16 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserClient userClient;
 
-    public Task createTask(Task task, String token) {
+    public Task createTask(TaskDto dto, String token) {
         UserInfo user = userClient.getCurrentUser(token);
 
+        Task task = TaskMapper.fromDto(dto);
         task.setCreatedBy(user.getUsername());
         task.setLastEditedBy(user.getUsername());
+        task.setDone(false);
 
         if (task.getComments() != null) {
-            task.getComments().forEach(comment -> comment.setTask(task));
+            task.getComments().forEach(c -> c.setTask(task));
         }
 
         return taskRepository.save(task);

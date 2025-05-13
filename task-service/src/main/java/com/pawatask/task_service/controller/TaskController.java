@@ -30,11 +30,10 @@ public class TaskController {
 
     @PostMapping
     public TaskDto createTask(
-            @Valid
-            @RequestBody Task task,
+            @Valid @RequestBody TaskDto dto,
             @RequestHeader("Authorization") String token
     ) {
-        Task saved = taskService.createTask(task, token);
+        Task saved = taskService.createTask(dto, token);
         return TaskMapper.toDto(saved);
     }
 

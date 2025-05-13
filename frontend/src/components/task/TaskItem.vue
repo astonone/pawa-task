@@ -19,15 +19,9 @@
       <i class="fas fa-calendar-alt"></i>
       <span class="date">{{ formattedDate }}</span>
 
-      <span :title="!canEdit ? 'Only authorized users can add comments' : ''">
-        <button
-          class="btn"
-          :class="{ disabled: !canEdit }"
-          :disabled="!canEdit"
-        >
-          <i class="fas fa-comment-alt"></i>
-        </button>
-      </span>
+      <button class="btn" @click="openDetailsModal">
+        <i class="fas fa-comment-alt"></i>
+      </button>
 
       <span :title="!canEdit ? 'Only authorized users can edit tasks' : ''">
         <button
@@ -45,6 +39,13 @@
           @close="showEdit = false"
           @task-updated="$emit('task-updated')"
       />
+      <TaskDetailsModal
+          v-if="showDetails"
+          :task="task"
+          :canEdit="canEdit"
+          @close="showDetails = false"
+          @edit-task="openEditModal"
+      />
     </div>
   </div>
 </template>
@@ -54,9 +55,10 @@ import Vue from 'vue'
 import {TaskDto} from "@/types/tasks";
 import EditTaskModal from "@/components/task/modal/EditTaskModal.vue";
 import {taskApi} from "@/plugins/axios";
+import TaskDetailsModal from "@/components/task/modal/TaskDetailsModal.vue";
 
 export default Vue.extend({
-  components: {EditTaskModal},
+  components: {TaskDetailsModal, EditTaskModal},
   props: {
     task: {
       type: Object as () => TaskDto,
@@ -69,7 +71,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      showEdit: false
+      showEdit: false,
+      showDetails: false
     }
   },
   methods: {
@@ -87,7 +90,10 @@ export default Vue.extend({
       if (this.canEdit) {
         this.showEdit = true
       }
-    }
+    },
+    openDetailsModal() {
+      this.showDetails = true;
+    },
   },
   computed: {
     formattedDate(): string {
