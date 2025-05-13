@@ -3,7 +3,16 @@
     <div class="container">
       <header class="header">
         <h1 class="title">PawaTask</h1>
-        <button class="new-task-btn" @click="showModal = true">Add a new task</button>
+        <span :title="!isAuthenticated ? 'Only authorized users can add new tasks' : ''">
+        <button
+            class="new-task-btn"
+            :class="{ disabled: !isAuthenticated }"
+            :disabled="!isAuthenticated"
+            @click="showModal = true"
+        >
+          Add a new task
+        </button>
+      </span>
       </header>
 
       <AddTaskModal :visible="showModal" @close="showModal = false" />
@@ -40,7 +49,7 @@ export default Vue.extend({
     return {
       tasks: [],
       showModal: false,
-      loadError: false
+      loadError: false,
     }
   },
   async mounted() {
@@ -101,6 +110,13 @@ export default Vue.extend({
 
 .new-task-btn:hover {
   background-color: #d33a2f;
+}
+
+.new-task-btn.disabled {
+  background-color: #ccc;
+}
+.new-task-btn.disabled:hover {
+  cursor: default;
 }
 
 .empty-state {
