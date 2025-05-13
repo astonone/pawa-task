@@ -4,13 +4,15 @@
       <span :title="!canEdit ? 'Only authorized users can complete tasks' : ''">
         <input
             type="checkbox"
+            :checked="task.done"
+            @change="toggleDone"
             :disabled="!canEdit"
             class="checkbox"
             :class="{ disabled: !canEdit }"
         />
       </span>
 
-      <span class="title">{{ task.title }}</span>
+      <span class="title" :class="{ done: task.done }">{{ task.title }}</span>
     </div>
 
     <div class="right">
@@ -51,6 +53,7 @@
 import Vue from 'vue'
 import {TaskDto} from "@/types/tasks";
 import EditTaskModal from "@/components/task/modal/EditTaskModal.vue";
+import {taskApi} from "@/plugins/axios";
 
 export default Vue.extend({
   components: {EditTaskModal},
@@ -70,6 +73,16 @@ export default Vue.extend({
     }
   },
   methods: {
+    async toggleDone() {
+      if (!this.canEdit) return;
+
+      try {
+        await taskApi.patch(`/tasks/${this.task.id}/toggle`)
+        this.$emit('task-updated')
+      } catch (err) {
+        alert('Failed to update task status')
+      }
+    },
     openEditModal() {
       if (this.canEdit) {
         this.showEdit = true
@@ -145,8 +158,14 @@ export default Vue.extend({
 .checkbox.disabled:hover {
   cursor: default;
 }
-
 .checkbox:hover {
   cursor: pointer;
+}
+.title.done {
+  text-decoration: line-through;
+  color: #aaa;
+}
+.task-item.done {
+  opacity: 0.7;
 }
 </style>

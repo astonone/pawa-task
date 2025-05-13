@@ -22,7 +22,7 @@ public class TaskController {
 
     @GetMapping
     public List<TaskDto> getAllTasks() {
-        return taskRepository.findAll()
+        return taskRepository.findAllByOrderByIsDoneAscTodoDateAsc()
                 .stream()
                 .map(TaskMapper::toDto)
                 .toList();
@@ -41,6 +41,12 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody @Valid TaskDto dto, @RequestHeader("Authorization") String token) {
         taskService.updateTask(id, dto, token);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{id}/toggle")
+    public ResponseEntity<?> toggleTaskDone(@PathVariable Long id) {
+        taskService.toggleTaskDone(id);
         return ResponseEntity.ok().build();
     }
 }

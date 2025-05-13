@@ -20,5 +20,6 @@ public class TaskDto {
     private LocalDateTime todoDate;
     @NotNull(message = "Priority is required")
     private Priority priority;
+    private boolean isDone;
     private List<CommentDto> comments;
 }

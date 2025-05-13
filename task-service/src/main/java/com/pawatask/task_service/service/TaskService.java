@@ -43,4 +43,12 @@ public class TaskService {
 
         taskRepository.save(task);
     }
+
+    public void toggleTaskDone(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found"));
+
+        task.setDone(!task.isDone());
+        taskRepository.save(task);
+    }
 }

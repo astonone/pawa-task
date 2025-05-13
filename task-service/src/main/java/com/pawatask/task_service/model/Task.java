@@ -35,6 +35,9 @@ public class Task {
     @Column(nullable = false)
     private Priority priority;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean isDone = false;
+
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 }

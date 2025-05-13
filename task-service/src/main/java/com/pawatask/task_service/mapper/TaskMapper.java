@@ -18,6 +18,7 @@ public class TaskMapper {
         dto.setLastEditedBy(task.getLastEditedBy());
         dto.setTodoDate(task.getTodoDate());
         dto.setPriority(task.getPriority());
+        dto.setDone(task.isDone());
 
         if (task.getComments() != null) {
             dto.setComments(task.getComments().stream().map(TaskMapper::commentToDto).collect(Collectors.toList()));

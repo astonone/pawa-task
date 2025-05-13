@@ -16,4 +16,5 @@ export interface TaskDto {
     todoDate: string
     priority: Priority
     comments: CommentDto[]
+    done: boolean
 }
