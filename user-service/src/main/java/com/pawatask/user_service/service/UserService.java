@@ -1,6 +1,7 @@
 package com.pawatask.user_service.service;
 
 import com.pawatask.user_service.dto.RegisterRequest;
+import com.pawatask.user_service.exception.UsernameAlreadyExistsException;
 import com.pawatask.user_service.model.User;
 import com.pawatask.user_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public User register(RegisterRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UsernameAlreadyExistsException("User with this username already exists");
+        }
+
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))

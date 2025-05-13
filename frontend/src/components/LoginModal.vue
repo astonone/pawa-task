@@ -8,14 +8,17 @@
 
       <form @submit.prevent="handleSubmit">
         <label>Username</label>
-        <input v-model="username" type="text" required />
+        <input v-model="username" type="text" />
+        <p v-if="errors.username" class="error">{{ errors.username }}</p>
 
         <label>Password</label>
-        <input v-model="password" type="password" required />
+        <input v-model="password" type="password" />
+        <p v-if="errors.username" class="error">{{ errors.password }}</p>
 
         <div v-if="isRegister">
           <label>Full Name</label>
-          <input v-model="fullName" type="text" required />
+          <input v-model="fullName" type="text" />
+          <p v-if="errors.username" class="error">{{ errors.fullName }}</p>
         </div>
 
         <button type="submit" class="login-btn">
@@ -37,7 +40,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {userApi} from "@/plugins/axios";
+import { AxiosError } from 'axios'
+import { userApi } from "@/plugins/axios";
 
 export default Vue.extend({
   props: {
@@ -49,7 +53,12 @@ export default Vue.extend({
       password: '',
       fullName: '',
       isRegister: false,
-      errorMessage: ''
+      errorMessage: '',
+      errors: {
+        username: '',
+        password: '',
+        fullName: ''
+      }
     }
   },
   watch: {
@@ -58,11 +67,35 @@ export default Vue.extend({
       this.password = ''
       this.fullName = ''
       this.errorMessage = ''
+      this.errors = {
+        username: '',
+            password: '',
+            fullName: ''
+      }
     }
   },
   methods: {
     async handleSubmit() {
       try {
+        this.errors = { username: '', password: '', fullName: '' }
+        let hasError = false
+
+        if (!this.username.trim()) {
+          this.errors.username = 'Username is required'
+          hasError = true
+        }
+
+        if (!this.password.trim()) {
+          this.errors.password = 'Password is required'
+          hasError = true
+        }
+
+        if (this.isRegister && !this.fullName.trim()) {
+          this.errors.fullName = 'Full name is required'
+          hasError = true
+        }
+        if (hasError) return;
+
         if (this.isRegister) {
           await userApi.post('/auth/register', {
             username: this.username,
@@ -90,10 +123,18 @@ export default Vue.extend({
             this.$router.push('/')
           }
         }
-      } catch (err) {
-        this.errorMessage = this.isRegister
-            ? 'Registration failed. Please check your data.'
-            : 'Login failed. Please check your credentials.'
+      } catch (err: unknown) {
+        const axiosErr = err as AxiosError
+
+        if (this.isRegister && axiosErr.response?.status === 409) {
+          this.errorMessage = 'User with this username already exists'
+        } else if (axiosErr.response?.status === 400) {
+          this.errorMessage = 'Please fill in all required fields'
+        } else {
+          this.errorMessage = this.isRegister
+              ? 'Registration failed. Please try again.'
+              : 'Login failed. Please check your credentials.'
+        }
       }
     }
   }

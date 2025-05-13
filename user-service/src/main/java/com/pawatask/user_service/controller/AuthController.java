@@ -8,6 +8,7 @@ import com.pawatask.user_service.mapper.UserMapper;
 import com.pawatask.user_service.repository.UserRepository;
 import com.pawatask.user_service.security.JWTUtil;
 import com.pawatask.user_service.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,12 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public UserDto register(@RequestBody RegisterRequest request) {
+    public UserDto register(@RequestBody @Valid RegisterRequest request) {
         return UserMapper.toDto(userService.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
         return userRepository.findByUsername(request.getUsername())
                 .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPassword()))
                 .map(user -> {
