@@ -6,15 +6,44 @@
         <button class="new-task-btn">Add a new task</button>
       </header>
 
-      <div class="empty-state">
-        <p>
-          You do not have any tasks
-          <a href="#">add a new task</a>
-        </p>
-      </div>
+      <template v-if="tasks.length === 0">
+        <div class="empty-state">
+          <p>
+            You do not have any tasks
+            <a href="#">add a new task</a>
+          </p>
+        </div>
+      </template>
+      <template v-else>
+        <TaskItem v-for="t in tasks" :key="t.id" :task="t" :canEdit="isAuthenticated" />
+      </template>
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import Vue from 'vue';
+import {taskApi} from "@/plugins/axios";
+import TaskItem from "@/components/TaskItem.vue";
+import {mapGetters} from "vuex";
+
+export default Vue.extend({
+  name: 'TaskView',
+  components: {TaskItem},
+  data() {
+    return {
+      tasks: []
+    }
+  },
+  async mounted() {
+    const res = await taskApi.get('/tasks')
+    this.tasks = res.data
+  },
+  computed: {
+    ...mapGetters('auth', ['isAuthenticated'])
+  }
+});
+</script>
 
 <style scoped>
 .page {
@@ -39,7 +68,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
   margin-bottom: 20px;
 }
@@ -64,6 +92,7 @@
 }
 
 .empty-state {
+  border-top: 1px solid #ddd;
   text-align: center;
 }
 
@@ -93,12 +122,3 @@
   }
 }
 </style>
-
-<script lang="ts">
-import Vue from 'vue';
-
-export default Vue.extend({
-  name: 'TaskView',
-  components: {},
-});
-</script>

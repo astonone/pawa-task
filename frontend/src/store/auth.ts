@@ -1,16 +1,6 @@
 import { Module } from 'vuex'
 import { userApi } from '@/plugins/axios'
-
-export interface UserInfo {
-    id: number
-    username: string
-    fullName: string
-}
-
-export interface AuthState {
-    token: string | null
-    userInfo: UserInfo | null
-}
+import {AuthState, UserInfo} from "@/types/auth";
 
 const authModule: Module<AuthState, any> = {
     namespaced: true,
