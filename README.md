@@ -14,8 +14,6 @@ A simple task manager with user authentication, task creation, and comments. Bui
     - Docker + Docker Compose
     - NGINX for frontend static hosting
 
----
-
 ## 🚀 Features
 
 - User registration & login
@@ -25,8 +23,6 @@ A simple task manager with user authentication, task creation, and comments. Bui
     - Create & update tasks
     - Toggle task status (done / not done)
     - Leave comments on tasks
-
----
 
 ## 🐳 Docker Setup (recommended)
 
@@ -45,8 +41,6 @@ This will spin up:
 - Vue.js frontend on port `8080`
 
 Open http://localhost:8080 to use the application.
-
----
 
 ## 🛠 Local Development Setup (without Docker)
 
@@ -88,8 +82,6 @@ npm run serve
 
 Then open http://localhost:8080
 
----
-
 ## 🧪 Test Users
 
 You can use the following users to log in without registering:
@@ -101,8 +93,6 @@ Password: 123
 Username: Irina K
 Password: 123
 ```
-
----
 
 ## 🔑 User Flow
 
@@ -119,15 +109,11 @@ Password: 123
     - `POST /tasks/{id}/comments` → Add comment (auth only)
     - `GET /tasks/{id}` → Load task by id (auth only)
 
----
-
 ## 🛡️ Notes
 
 - All authenticated requests require `Authorization: Bearer &lt;token&gt;`
 - Unauthenticated users can only view tasks (read-only)
 - Each service has its own isolated PostgreSQL database
-
----
 
 ## 🧪 Testing
 
@@ -149,6 +135,4 @@ It is located in the root of the repository.
 
 ## 🤝 Author
 
-Viktor Kulygin — [LinkedIn](https://linkedin.com/in/viktorkulygin)
-
----
+Viktor Kulygin — [LinkedIn](https://www.linkedin.com/in/viktor-kulygin-b3b098173/)
