@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <AppHeader @show-login="openLogin" />
-    <LoginModal :visible="showLogin" @close="showLogin = false" :key="modalKey" />
+    <LoginModal :key="modalKey" :visible="showLogin" @close="showLogin = false" />
     <main class="main-content">
       <router-view />
     </main>
@@ -9,9 +9,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import AppHeader from '@/components/main/AppHeader.vue'
-import LoginModal from '@/components/login-modal/LoginModal.vue'
+import Vue from 'vue';
+import AppHeader from '@/components/main/AppHeader.vue';
+import LoginModal from '@/components/login-modal/LoginModal.vue';
 
 export default Vue.extend({
   components: { AppHeader, LoginModal },
@@ -19,21 +19,21 @@ export default Vue.extend({
     return {
       showLogin: false,
       modalKey: 0
-    }
+    };
+  },
+  created() {
+    this.$root.$on('show-login', this.openLogin);
+  },
+  beforeDestroy() {
+    this.$root.$off('show-login', this.openLogin);
   },
   methods: {
     openLogin() {
-      this.modalKey++
-      this.showLogin = true
+      this.modalKey++;
+      this.showLogin = true;
     }
-  },
-  created() {
-    this.$root.$on('show-login', this.openLogin)
-  },
-  beforeDestroy() {
-    this.$root.$off('show-login', this.openLogin)
   }
-})
+});
 </script>
 
 <style scoped>

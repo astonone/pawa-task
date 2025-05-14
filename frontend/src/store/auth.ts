@@ -1,48 +1,48 @@
-import { Module } from 'vuex'
-import { userApi } from '@/plugins/axios'
-import {AuthState, UserInfo} from "@/types/auth";
+import { Module } from 'vuex';
+import { userApi } from '@/plugins/axios';
+import { AuthState, UserInfo } from '@/types/auth';
 
 const authModule: Module<AuthState, any> = {
-    namespaced: true,
-    state: () => ({
-        token: localStorage.getItem('token'),
-        userInfo: null
-    }),
-    mutations: {
-        setToken(state, token: string) {
-            state.token = token
-            localStorage.setItem('token', token)
-        },
-        clearToken(state) {
-            state.token = null
-            localStorage.removeItem('token')
-        },
-        setUserInfo(state, user: UserInfo) {
-            state.userInfo = user
-        }
+  namespaced: true,
+  state: () => ({
+    token: localStorage.getItem('token'),
+    userInfo: null
+  }),
+  mutations: {
+    setToken(state, token: string) {
+      state.token = token;
+      localStorage.setItem('token', token);
     },
-    actions: {
-        async login({ commit, dispatch }, payload: { username: string; password: string }) {
-            const response = await userApi.post('/auth/login', payload)
-            commit('setToken', response.data.token)
-            await dispatch('fetchUserInfo')
-        },
-        logout({ commit }) {
-            commit('clearToken')
-        },
-        async fetchUserInfo({ commit }) {
-            const response = await userApi.get('/users/me')
-            commit('setUserInfo', response.data)
-        }
+    clearToken(state) {
+      state.token = null;
+      localStorage.removeItem('token');
     },
-    getters: {
-        isAuthenticated(state): boolean {
-            return !!state.token
-        },
-        token(state): string | null {
-            return state.token
-        }
+    setUserInfo(state, user: UserInfo) {
+      state.userInfo = user;
     }
-}
+  },
+  actions: {
+    async login({ commit, dispatch }, payload: { username: string; password: string }) {
+      const response = await userApi.post('/auth/login', payload);
+      commit('setToken', response.data.token);
+      await dispatch('fetchUserInfo');
+    },
+    logout({ commit }) {
+      commit('clearToken');
+    },
+    async fetchUserInfo({ commit }) {
+      const response = await userApi.get('/users/me');
+      commit('setUserInfo', response.data);
+    }
+  },
+  getters: {
+    isAuthenticated(state): boolean {
+      return !!state.token;
+    },
+    token(state): string | null {
+      return state.token;
+    }
+  }
+};
 
-export default authModule
+export default authModule;

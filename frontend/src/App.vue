@@ -6,38 +6,39 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import MainLayout from '@/layouts/MainLayout.vue'
-import SessionExpiredModal from "@/components/login-modal/SessionExpiredModal.vue";
+import Vue from 'vue';
+import MainLayout from '@/layouts/MainLayout.vue';
+import SessionExpiredModal from '@/components/login-modal/SessionExpiredModal.vue';
 
 export default Vue.extend({
-  components: {SessionExpiredModal, MainLayout },
+  components: { SessionExpiredModal, MainLayout },
   data() {
     return {
       sessionExpired: false
-    }
+    };
   },
   created() {
     this.$root.$on('session-expired', () => {
-      this.sessionExpired = true
-    })
+      this.sessionExpired = true;
+    });
   },
   async mounted() {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
     if (token) {
       try {
-        await this.$store.dispatch('auth/fetchUserInfo')
+        await this.$store.dispatch('auth/fetchUserInfo');
       } catch (err) {
-        this.$store.dispatch('auth/logout')
-        this.$root.$emit('session-expired')
+        this.$store.dispatch('auth/logout');
+        this.$root.$emit('session-expired');
       }
     }
   }
-})
+});
 </script>
 
 <style>
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;

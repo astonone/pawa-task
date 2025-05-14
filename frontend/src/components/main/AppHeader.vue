@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { mapGetters, mapActions } from 'vuex'
+import Vue from 'vue';
+import { mapGetters, mapActions } from 'vuex';
 
 export default Vue.extend({
   computed: {
@@ -32,7 +32,7 @@ export default Vue.extend({
   methods: {
     ...mapActions('auth', ['logout'])
   }
-})
+});
 </script>
 
 <style scoped>

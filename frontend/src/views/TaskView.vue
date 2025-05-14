@@ -4,18 +4,18 @@
       <header class="header">
         <h1 class="title">PawaTask</h1>
         <span :title="!isAuthenticated ? 'Only authorized users can add new tasks' : ''">
-        <button
+          <button
             class="new-task-btn"
             :class="{ disabled: !isAuthenticated }"
             :disabled="!isAuthenticated"
             @click="showModal = true"
-        >
-          Add a new task
-        </button>
-      </span>
+          >
+            Add a new task
+          </button>
+        </span>
       </header>
 
-      <AddTaskModal :visible="showModal" @close="showModal = false" @task-created="reloadTasks"/>
+      <AddTaskModal :visible="showModal" @close="showModal = false" @task-created="reloadTasks" />
       <template v-if="tasks.length === 0 && !loadError">
         <div class="empty-state">
           <p>
@@ -25,7 +25,13 @@
         </div>
       </template>
       <template v-else>
-        <TaskItem v-for="t in tasks" :key="t.id" :task="t" :canEdit="isAuthenticated" @task-updated="reloadTasks"/>
+        <TaskItem
+          v-for="t in tasks"
+          :key="t.id"
+          :task="t"
+          :can-edit="isAuthenticated"
+          @task-updated="reloadTasks"
+        />
       </template>
       <template v-if="loadError">
         <div class="empty-state error">
@@ -38,43 +44,43 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {taskApi} from "@/plugins/axios";
-import TaskItem from "@/components/task/TaskItem.vue";
-import {mapGetters} from "vuex";
-import AddTaskModal from "@/components/task/modal/AddTaskModal.vue";
-import {AxiosError} from "axios";
+import { taskApi } from '@/plugins/axios';
+import TaskItem from '@/components/task/TaskItem.vue';
+import { mapGetters } from 'vuex';
+import AddTaskModal from '@/components/task/modal/AddTaskModal.vue';
+import { AxiosError } from 'axios';
 
 export default Vue.extend({
   name: 'TaskView',
-  components: {TaskItem, AddTaskModal},
+  components: { TaskItem, AddTaskModal },
   data() {
     return {
       tasks: [],
       showModal: false,
-      loadError: '',
-    }
+      loadError: ''
+    };
   },
   async mounted() {
-    await this.fetchTasks()
+    await this.fetchTasks();
   },
   methods: {
     async fetchTasks() {
-      this.loadError = ''
+      this.loadError = '';
 
       try {
-        const res = await taskApi.get('/tasks')
-        this.tasks = res.data
+        const res = await taskApi.get('/tasks');
+        this.tasks = res.data;
       } catch (err: unknown) {
-        const axiosErr = err as AxiosError
+        const axiosErr = err as AxiosError;
 
-        const status = axiosErr.response?.status
-        const msg = (axiosErr.response?.data as any)?.message || 'Unknown error'
+        const status = axiosErr.response?.status;
+        const msg = (axiosErr.response?.data as any)?.message || 'Unknown error';
 
-        this.loadError = `Error ${status || '???'}: ${msg}`
+        this.loadError = `Error ${status || '???'}: ${msg}`;
       }
     },
     async reloadTasks() {
-      await this.fetchTasks()
+      await this.fetchTasks();
     }
   },
   computed: {

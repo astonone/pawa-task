@@ -1,8 +1,8 @@
 <template>
-  <div class="overlay" v-if="visible">
+  <div v-if="visible" class="overlay">
     <div class="modal">
       <div class="modal-header">
-        <h2>Edit task: {{title}}</h2>
+        <h2>Edit task: {{ title }}</h2>
         <button class="close-btn" @click="$emit('close')">×</button>
       </div>
 
@@ -39,10 +39,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { AxiosError } from 'axios'
-import { taskApi } from '@/plugins/axios'
-import {TaskDto} from "@/types/tasks";
+import Vue from 'vue';
+import { AxiosError } from 'axios';
+import { taskApi } from '@/plugins/axios';
+import { TaskDto } from '@/types/tasks';
 
 export default Vue.extend({
   props: {
@@ -62,48 +62,46 @@ export default Vue.extend({
         title: '',
         date: ''
       }
-    }
+    };
   },
   watch: {
     visible(newVal: boolean) {
       if (newVal && this.task) {
-        this.resetForm()
+        this.resetForm();
       }
     }
   },
   methods: {
     resetForm() {
-      this.title = this.task.title || ''
-      this.description = this.task.description || ''
-      this.priority = this.task.priority || 'LOW'
+      this.title = this.task.title || '';
+      this.description = this.task.description || '';
+      this.priority = this.task.priority || 'LOW';
 
-      const date = new Date(this.task.todoDate)
-      this.day = String(date.getDate()).padStart(2, '0')
-      this.month = String(date.getMonth() + 1).padStart(2, '0')
-      this.year = String(date.getFullYear())
+      const date = new Date(this.task.todoDate);
+      this.day = String(date.getDate()).padStart(2, '0');
+      this.month = String(date.getMonth() + 1).padStart(2, '0');
+      this.year = String(date.getFullYear());
 
-      this.errorMessage = ''
-      this.errors = { title: '', date: '' }
+      this.errorMessage = '';
+      this.errors = { title: '', date: '' };
     },
     async handleSubmit() {
-      this.errors = { title: '', date: '' }
+      this.errors = { title: '', date: '' };
 
       if (!this.title.trim()) {
-        this.errors.title = 'Title is required'
+        this.errors.title = 'Title is required';
       }
 
       const isValidDate =
-          /^\d{2}$/.test(this.day) &&
-          /^\d{2}$/.test(this.month) &&
-          /^\d{4}$/.test(this.year)
+        /^\d{2}$/.test(this.day) && /^\d{2}$/.test(this.month) && /^\d{4}$/.test(this.year);
 
       if (!isValidDate) {
-        this.errors.date = 'Invalid date'
+        this.errors.date = 'Invalid date';
       }
 
-      if (this.errors.title || this.errors.date) return
+      if (this.errors.title || this.errors.date) return;
 
-      const todoDate = `${this.year}-${this.month}-${this.day}T12:00:00`
+      const todoDate = `${this.year}-${this.month}-${this.day}T12:00:00`;
 
       try {
         await taskApi.put(`/tasks/${this.task.id}`, {
@@ -111,31 +109,31 @@ export default Vue.extend({
           description: this.description,
           todoDate,
           priority: this.priority
-        })
+        });
 
-        this.$emit('close')
-        this.$emit('task-updated')
+        this.$emit('close');
+        this.$emit('task-updated');
       } catch (err: unknown) {
         const axiosErr = err as AxiosError;
 
         if (axiosErr.response?.status === 401) {
-          await this.$store.dispatch('auth/logout')
+          await this.$store.dispatch('auth/logout');
           this.$emit('close');
-          this.$root.$emit('session-expired')
-          return
+          this.$root.$emit('session-expired');
+          return;
         }
 
         if (axiosErr.response?.status && axiosErr.response?.data) {
-          const status = axiosErr.response.status
-          const msg = (axiosErr.response.data as any).message || 'Unknown error'
-          this.errorMessage = `Error ${status}: ${msg}`
+          const status = axiosErr.response.status;
+          const msg = (axiosErr.response.data as any).message || 'Unknown error';
+          this.errorMessage = `Error ${status}: ${msg}`;
         } else {
-          this.errorMessage = 'Something went wrong. Please try again later.'
+          this.errorMessage = 'Something went wrong. Please try again later.';
         }
       }
     }
   }
-})
+});
 </script>
 
 <style scoped>
@@ -174,7 +172,9 @@ label {
   margin-top: 16px;
   font-weight: bold;
 }
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   padding: 8px;
   margin-top: 4px;

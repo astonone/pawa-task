@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay" v-if="visible">
+  <div v-if="visible" class="overlay">
     <div class="modal">
       <div class="header">
         <h2>{{ isRegister ? 'Register' : 'Login' }}</h2>
@@ -39,9 +39,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { AxiosError } from 'axios'
-import { userApi } from "@/plugins/axios";
+import Vue from 'vue';
+import { AxiosError } from 'axios';
+import { userApi } from '@/plugins/axios';
 
 export default Vue.extend({
   props: {
@@ -59,40 +59,40 @@ export default Vue.extend({
         password: '',
         fullName: ''
       }
-    }
+    };
   },
   watch: {
     isRegister() {
-      this.username = ''
-      this.password = ''
-      this.fullName = ''
-      this.errorMessage = ''
+      this.username = '';
+      this.password = '';
+      this.fullName = '';
+      this.errorMessage = '';
       this.errors = {
         username: '',
-            password: '',
-            fullName: ''
-      }
+        password: '',
+        fullName: ''
+      };
     }
   },
   methods: {
     async handleSubmit() {
       try {
-        this.errors = { username: '', password: '', fullName: '' }
-        let hasError = false
+        this.errors = { username: '', password: '', fullName: '' };
+        let hasError = false;
 
         if (!this.username.trim()) {
-          this.errors.username = 'Username is required'
-          hasError = true
+          this.errors.username = 'Username is required';
+          hasError = true;
         }
 
         if (!this.password.trim()) {
-          this.errors.password = 'Password is required'
-          hasError = true
+          this.errors.password = 'Password is required';
+          hasError = true;
         }
 
         if (this.isRegister && !this.fullName.trim()) {
-          this.errors.fullName = 'Full name is required'
-          hasError = true
+          this.errors.fullName = 'Full name is required';
+          hasError = true;
         }
         if (hasError) return;
 
@@ -101,49 +101,52 @@ export default Vue.extend({
             username: this.username,
             password: this.password,
             fullName: this.fullName
-          })
+          });
 
           await this.$store.dispatch('auth/login', {
             username: this.username,
             password: this.password
-          })
+          });
 
-          this.$emit('close')
+          this.$emit('close');
           if (this.$route.path !== '/') {
-            this.$router.push('/')
+            this.$router.push('/');
           }
         } else {
           await this.$store.dispatch('auth/login', {
             username: this.username,
             password: this.password
-          })
+          });
 
-          this.$emit('close')
+          this.$emit('close');
           if (this.$route.path !== '/') {
-            this.$router.push('/')
+            this.$router.push('/');
           }
         }
       } catch (err: unknown) {
-        const axiosErr = err as AxiosError
+        const axiosErr = err as AxiosError;
 
-        const status = axiosErr.response?.status
-        const message = (axiosErr.response?.data as any)?.message || ''
+        const status = axiosErr.response?.status;
+        const message = (axiosErr.response?.data as any)?.message || '';
 
         if (this.isRegister && status === 409) {
-          this.errorMessage = `Error 409: ${message || 'User with this username already exists'}`
+          this.errorMessage = `Error 409: ${message || 'User with this username already exists'}`;
         } else if (status === 400) {
-          this.errorMessage = `Error 400: ${message || 'Please fill in all required fields'}`
+          this.errorMessage = `Error 400: ${message || 'Please fill in all required fields'}`;
         } else if (status === 401) {
-          this.errorMessage = `Error 401: ${message || 'Invalid credentials'}`
+          this.errorMessage = `Error 401: ${message || 'Invalid credentials'}`;
         } else {
-          this.errorMessage = `Error ${status || '???'}: ${message || (this.isRegister
+          this.errorMessage = `Error ${status || '???'}: ${
+            message ||
+            (this.isRegister
               ? 'Registration failed. Please try again.'
-              : 'Login failed. Please check your credentials.')}`
+              : 'Login failed. Please check your credentials.')
+          }`;
         }
       }
     }
   }
-})
+});
 </script>
 
 <style scoped>

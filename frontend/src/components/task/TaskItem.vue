@@ -3,12 +3,12 @@
     <div class="left">
       <span :title="!canEdit ? 'Only authorized users can complete tasks' : ''">
         <input
-            type="checkbox"
-            :checked="task.done"
-            @change="toggleDone"
-            :disabled="!canEdit"
-            class="checkbox"
-            :class="{ disabled: !canEdit }"
+          type="checkbox"
+          :checked="task.done"
+          :disabled="!canEdit"
+          class="checkbox"
+          :class="{ disabled: !canEdit }"
+          @change="toggleDone"
         />
       </span>
 
@@ -25,27 +25,27 @@
 
       <span :title="!canEdit ? 'Only authorized users can edit tasks' : ''">
         <button
-            class="btn"
-            :class="{ disabled: !canEdit }"
-            :disabled="!canEdit"
-            @click="openEditModal"
+          class="btn"
+          :class="{ disabled: !canEdit }"
+          :disabled="!canEdit"
+          @click="openEditModal"
         >
           <i class="fas fa-edit"></i>
         </button>
       </span>
       <EditTaskModal
-          :visible="showEdit"
-          :task="task"
-          @close="showEdit = false"
-          @task-updated="$emit('task-updated')"
+        :visible="showEdit"
+        :task="task"
+        @close="showEdit = false"
+        @task-updated="$emit('task-updated')"
       />
       <TaskDetailsModal
-          v-if="showDetails"
-          :task="task"
-          :canEdit="canEdit"
-          @close="showDetails = false"
-          @edit-task="openEditModal"
-          @task-updated="$emit('task-updated')"
+        v-if="showDetails"
+        :task="task"
+        :can-edit="canEdit"
+        @close="showDetails = false"
+        @edit-task="openEditModal"
+        @task-updated="$emit('task-updated')"
       />
       <ErrorModal v-if="showErrorModal" :message="errorMessage" @close="showErrorModal = false" />
     </div>
@@ -53,16 +53,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import {TaskDto} from "@/types/tasks";
-import EditTaskModal from "@/components/task/modal/EditTaskModal.vue";
-import {taskApi} from "@/plugins/axios";
-import TaskDetailsModal from "@/components/task/modal/TaskDetailsModal.vue";
-import {AxiosError} from "axios";
-import ErrorModal from "@/components/error/ErrorModal.vue";
+import Vue from 'vue';
+import { TaskDto } from '@/types/tasks';
+import EditTaskModal from '@/components/task/modal/EditTaskModal.vue';
+import { taskApi } from '@/plugins/axios';
+import TaskDetailsModal from '@/components/task/modal/TaskDetailsModal.vue';
+import { AxiosError } from 'axios';
+import ErrorModal from '@/components/error/ErrorModal.vue';
 
 export default Vue.extend({
-  components: {ErrorModal, TaskDetailsModal, EditTaskModal},
+  components: { ErrorModal, TaskDetailsModal, EditTaskModal },
   props: {
     task: {
       type: Object as () => TaskDto,
@@ -78,7 +78,17 @@ export default Vue.extend({
       showEdit: false,
       showDetails: false,
       showErrorModal: false,
-      errorMessage: '',
+      errorMessage: ''
+    };
+  },
+  computed: {
+    formattedDate(): string {
+      const date = new Date(this.task.todoDate);
+      return date.toLocaleString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
     }
   },
   methods: {
@@ -86,36 +96,26 @@ export default Vue.extend({
       if (!this.canEdit) return;
 
       try {
-        await taskApi.patch(`/tasks/${this.task.id}/toggle`)
-        this.$emit('task-updated')
+        await taskApi.patch(`/tasks/${this.task.id}/toggle`);
+        this.$emit('task-updated');
       } catch (err: unknown) {
-        const axiosErr = err as AxiosError
-        const code = axiosErr.response?.status || '???'
-        const message = (axiosErr.response?.data as any)?.message || 'Failed to update task status'
-        this.errorMessage = `Error ${code}: ${message}`
-        this.showErrorModal = true
+        const axiosErr = err as AxiosError;
+        const code = axiosErr.response?.status || '???';
+        const message = (axiosErr.response?.data as any)?.message || 'Failed to update task status';
+        this.errorMessage = `Error ${code}: ${message}`;
+        this.showErrorModal = true;
       }
     },
     openEditModal() {
       if (this.canEdit) {
-        this.showEdit = true
+        this.showEdit = true;
       }
     },
     openDetailsModal() {
       this.showDetails = true;
-    },
-  },
-  computed: {
-    formattedDate(): string {
-      const date = new Date(this.task.todoDate)
-      return date.toLocaleString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      })
     }
   }
-})
+});
 </script>
 
 <style scoped>

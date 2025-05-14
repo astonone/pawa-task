@@ -1,10 +1,10 @@
 export interface UserInfo {
-    id: number
-    username: string
-    fullName: string
+  id: number;
+  username: string;
+  fullName: string;
 }
 
 export interface AuthState {
-    token: string | null
-    userInfo: UserInfo | null
+  token: string | null;
+  userInfo: UserInfo | null;
 }

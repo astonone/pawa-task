@@ -1,7 +1,7 @@
-import { AxiosInstance } from 'axios'
+import { AxiosInstance } from 'axios';
 
 declare module 'vue/types/vue' {
-    interface Vue {
-        $axios: AxiosInstance
-    }
+  interface Vue {
+    $axios: AxiosInstance;
+  }
 }

@@ -16,16 +16,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   methods: {
     handleConfirm() {
-      this.$emit('close')
-      this.$root.$emit('show-login')
+      this.$emit('close');
+      this.$root.$emit('show-login');
     }
   }
-})
+});
 </script>
 
 <style scoped>

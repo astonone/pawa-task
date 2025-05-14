@@ -5,10 +5,10 @@
         <h2 class="title">
           {{ taskLocal.title }}
           <button
-              class="edit-link"
-              @click="handleEditClick"
-              :disabled="!canEdit"
-              :title="!canEdit ? 'Only authorized users can edit tasks' : ''"
+            class="edit-link"
+            :disabled="!canEdit"
+            :title="!canEdit ? 'Only authorized users can edit tasks' : ''"
+            @click="handleEditClick"
           >
             Edit task
           </button>
@@ -28,9 +28,7 @@
       <hr />
 
       <div class="comments">
-        <div v-if="taskLocal.comments.length === 0" class="empty-comments">
-          No comments yet.
-        </div>
+        <div v-if="taskLocal.comments.length === 0" class="empty-comments">No comments yet.</div>
         <div v-else>
           <div v-for="(comment, index) in taskLocal.comments" :key="index" class="comment">
             <strong>{{ comment.author }}</strong>
@@ -42,36 +40,32 @@
 
       <div class="comment-form">
         <input
-            v-model="commentText"
-            placeholder="Write a comment..."
-            :disabled="!canEdit"
-            :title="!canEdit ? 'Only authorized users can leave comments' : ''"
+          v-model="commentText"
+          placeholder="Write a comment..."
+          :disabled="!canEdit"
+          :title="!canEdit ? 'Only authorized users can leave comments' : ''"
         />
         <button
-            class="submit-btn"
-            :disabled="!canEdit || !commentText.trim()"
-            @click="addComment"
-            :title="!canEdit ? 'Only authorized users can leave comments' : ''"
+          class="submit-btn"
+          :disabled="!canEdit || !commentText.trim()"
+          :title="!canEdit ? 'Only authorized users can leave comments' : ''"
+          @click="addComment"
         >
           Add comment
         </button>
       </div>
 
-      <ErrorModal
-          v-if="showErrorModal"
-          :message="errorMessage"
-          @close="showErrorModal = false"
-      />
+      <ErrorModal v-if="showErrorModal" :message="errorMessage" @close="showErrorModal = false" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { TaskDto } from '@/types/tasks'
-import { taskApi } from '@/plugins/axios'
-import { AxiosError } from 'axios'
-import ErrorModal from '@/components/error/ErrorModal.vue'
+import Vue from 'vue';
+import { TaskDto } from '@/types/tasks';
+import { taskApi } from '@/plugins/axios';
+import { AxiosError } from 'axios';
+import ErrorModal from '@/components/error/ErrorModal.vue';
 
 export default Vue.extend({
   components: { ErrorModal },
@@ -85,72 +79,78 @@ export default Vue.extend({
       errorMessage: '',
       showErrorModal: false,
       taskLocal: this.task
+    };
+  },
+  computed: {
+    formattedDate(): string {
+      const date = new Date(this.taskLocal.todoDate);
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
     }
   },
   watch: {
     task: {
       handler(newVal) {
-        this.taskLocal = { ...newVal }
+        this.taskLocal = { ...newVal };
       },
       immediate: true
-    }
-  },
-  computed: {
-    formattedDate(): string {
-      const date = new Date(this.taskLocal.todoDate)
-      return date.toLocaleDateString('en-GB', {
-        day: '2-digit', month: '2-digit', year: 'numeric'
-      })
     }
   },
   methods: {
     handleEditClick() {
       if (this.canEdit) {
-        this.$emit('close')
-        this.$emit('edit-task')
+        this.$emit('close');
+        this.$emit('edit-task');
       }
     },
     async addComment() {
-      if (!this.commentText.trim()) return
+      if (!this.commentText.trim()) return;
 
       try {
         await taskApi.post(`/tasks/${this.taskLocal.id}/comments`, {
           text: this.commentText,
           author: this.$store.state.auth.userInfo.username
-        })
+        });
 
-        this.commentText = ''
-        await this.reloadTask()
-        this.$emit('task-updated')
+        this.commentText = '';
+        await this.reloadTask();
+        this.$emit('task-updated');
       } catch (err: unknown) {
-        const axiosErr = err as AxiosError
-        const code = axiosErr.response?.status || '???'
-        const message = (axiosErr.response?.data as any)?.message || 'Failed to add comment'
-        this.errorMessage = `Error ${code}: ${message}`
-        this.showErrorModal = true
+        const axiosErr = err as AxiosError;
+        const code = axiosErr.response?.status || '???';
+        const message = (axiosErr.response?.data as any)?.message || 'Failed to add comment';
+        this.errorMessage = `Error ${code}: ${message}`;
+        this.showErrorModal = true;
       }
     },
     async reloadTask() {
       try {
-        const res = await taskApi.get(`/tasks/${this.taskLocal.id}`)
-        this.taskLocal = res.data
+        const res = await taskApi.get(`/tasks/${this.taskLocal.id}`);
+        this.taskLocal = res.data;
       } catch (err: unknown) {
-        const axiosErr = err as AxiosError
-        const code = axiosErr.response?.status || '???'
-        const message = (axiosErr.response?.data as any)?.message || 'Failed to reload task'
-        this.errorMessage = `Error ${code}: ${message}`
-        this.showErrorModal = true
+        const axiosErr = err as AxiosError;
+        const code = axiosErr.response?.status || '???';
+        const message = (axiosErr.response?.data as any)?.message || 'Failed to reload task';
+        this.errorMessage = `Error ${code}: ${message}`;
+        this.showErrorModal = true;
       }
     },
     formatCommentDate(raw: string): string {
-      if (!raw) return ''
-      const date = new Date(raw)
+      if (!raw) return '';
+      const date = new Date(raw);
       return date.toLocaleString('en-GB', {
-        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-      })
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
     }
   }
-})
+});
 </script>
 
 <style scoped>

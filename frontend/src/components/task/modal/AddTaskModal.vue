@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay" v-if="visible">
+  <div v-if="visible" class="overlay">
     <div class="modal">
       <div class="modal-header">
         <h2>New task</h2>
@@ -41,9 +41,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import {taskApi} from "@/plugins/axios";
-import {AxiosError} from "axios";
+import Vue from 'vue';
+import { taskApi } from '@/plugins/axios';
+import { AxiosError } from 'axios';
 
 export default Vue.extend({
   props: {
@@ -63,49 +63,47 @@ export default Vue.extend({
         title: '',
         date: ''
       }
-    }
+    };
   },
   watch: {
     visible(newVal: boolean) {
       if (newVal) {
-        this.resetForm()
+        this.resetForm();
       }
     }
   },
   methods: {
     resetForm() {
-      this.title = ''
-      this.description = ''
-      this.day = ''
-      this.month = ''
-      this.year = ''
-      this.priority = 'LOW'
-      this.comments = ''
+      this.title = '';
+      this.description = '';
+      this.day = '';
+      this.month = '';
+      this.year = '';
+      this.priority = 'LOW';
+      this.comments = '';
       this.errors = {
         title: '',
         date: ''
-      }
+      };
     },
     async handleSubmit() {
-      this.errorMessage = ''
-      this.errors = { title: '', date: '' }
+      this.errorMessage = '';
+      this.errors = { title: '', date: '' };
 
       if (!this.title.trim()) {
-        this.errors.title = 'Title is required'
+        this.errors.title = 'Title is required';
       }
 
       const isValidDate =
-          /^\d{2}$/.test(this.day) &&
-          /^\d{2}$/.test(this.month) &&
-          /^\d{4}$/.test(this.year)
+        /^\d{2}$/.test(this.day) && /^\d{2}$/.test(this.month) && /^\d{4}$/.test(this.year);
 
       if (!isValidDate) {
-        this.errors.date = 'Invalid date'
+        this.errors.date = 'Invalid date';
       }
 
-      if (this.errors.title || this.errors.date) return
+      if (this.errors.title || this.errors.date) return;
 
-      const todoDate = `${this.year}-${this.month}-${this.day}T12:00:00`
+      const todoDate = `${this.year}-${this.month}-${this.day}T12:00:00`;
 
       try {
         await taskApi.post('/tasks', {
@@ -113,20 +111,18 @@ export default Vue.extend({
           description: this.description,
           todoDate,
           priority: this.priority,
-          comments: this.comments ? [
-            { text: this.comments,
-              author: this.$store.state.auth.userInfo.username,
-            }
-          ] : []
-        })
+          comments: this.comments
+            ? [{ text: this.comments, author: this.$store.state.auth.userInfo.username }]
+            : []
+        });
 
-        this.$emit('close')
-        this.$emit('task-created')
+        this.$emit('close');
+        this.$emit('task-created');
       } catch (err: unknown) {
         const axiosErr = err as AxiosError;
 
         if (axiosErr.response?.status === 401) {
-          await this.$store.dispatch('auth/logout')
+          await this.$store.dispatch('auth/logout');
           this.$emit('close');
           this.$root.$emit('session-expired');
           return;
@@ -143,7 +139,7 @@ export default Vue.extend({
       }
     }
   }
-})
+});
 </script>
 
 <style scoped>
@@ -182,7 +178,9 @@ label {
   margin-top: 16px;
   font-weight: bold;
 }
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   padding: 8px;
   margin-top: 4px;
