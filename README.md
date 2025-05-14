@@ -117,11 +117,7 @@ Password: 123
 
 ## 🧪 Testing
 
-The project includes basic integration tests for both services. To run tests:
-
-```bash
-./gradlew test
-```
+The project includes basic unit and integration tests for both services. To run tests:
 
 ## 📄 Assignment
 
