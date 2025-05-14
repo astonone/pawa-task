@@ -45,6 +45,7 @@
           :canEdit="canEdit"
           @close="showDetails = false"
           @edit-task="openEditModal"
+          @task-updated="$emit('task-updated')"
       />
       <ErrorModal v-if="showErrorModal" :message="errorMessage" @close="showErrorModal = false" />
     </div>

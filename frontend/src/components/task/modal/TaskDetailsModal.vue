@@ -3,7 +3,7 @@
     <div class="modal">
       <div class="modal-header">
         <h2 class="title">
-          {{ task.title }}
+          {{ taskLocal.title }}
           <button
               class="edit-link"
               @click="handleEditClick"
@@ -17,22 +17,22 @@
       </div>
 
       <div class="description">
-        {{ task.description || 'This task has no description.' }}
+        {{ taskLocal.description || 'This task has no description.' }}
       </div>
 
       <div class="meta">
         <div><strong>Date:</strong> {{ formattedDate }}</div>
-        <div><strong>Priority:</strong> {{ task.priority }}</div>
+        <div><strong>Priority:</strong> {{ taskLocal.priority }}</div>
       </div>
 
       <hr />
 
       <div class="comments">
-        <div v-if="task.comments.length === 0" class="empty-comments">
+        <div v-if="taskLocal.comments.length === 0" class="empty-comments">
           No comments yet.
         </div>
         <div v-else>
-          <div v-for="(comment, index) in task.comments" :key="index" class="comment">
+          <div v-for="(comment, index) in taskLocal.comments" :key="index" class="comment">
             <strong>{{ comment.author }}</strong>
             <span class="timestamp">{{ formatCommentDate(comment.createdAt) }}</span>
             <div>{{ comment.text }}</div>
@@ -56,6 +56,12 @@
           Add comment
         </button>
       </div>
+
+      <ErrorModal
+          v-if="showErrorModal"
+          :message="errorMessage"
+          @close="showErrorModal = false"
+      />
     </div>
   </div>
 </template>
@@ -64,20 +70,34 @@
 import Vue from 'vue'
 import { TaskDto } from '@/types/tasks'
 import { taskApi } from '@/plugins/axios'
+import { AxiosError } from 'axios'
+import ErrorModal from '@/components/error/ErrorModal.vue'
 
 export default Vue.extend({
+  components: { ErrorModal },
   props: {
     task: Object as () => TaskDto,
     canEdit: Boolean
   },
   data() {
     return {
-      commentText: ''
+      commentText: '',
+      errorMessage: '',
+      showErrorModal: false,
+      taskLocal: this.task
+    }
+  },
+  watch: {
+    task: {
+      handler(newVal) {
+        this.taskLocal = { ...newVal }
+      },
+      immediate: true
     }
   },
   computed: {
     formattedDate(): string {
-      const date = new Date(this.task.todoDate)
+      const date = new Date(this.taskLocal.todoDate)
       return date.toLocaleDateString('en-GB', {
         day: '2-digit', month: '2-digit', year: 'numeric'
       })
@@ -94,13 +114,32 @@ export default Vue.extend({
       if (!this.commentText.trim()) return
 
       try {
-        await taskApi.post(`/tasks/${this.task.id}/comments`, {
-          text: this.commentText
+        await taskApi.post(`/tasks/${this.taskLocal.id}/comments`, {
+          text: this.commentText,
+          author: this.$store.state.auth.userInfo.username
         })
-        this.$emit('close')
+
+        this.commentText = ''
+        await this.reloadTask()
         this.$emit('task-updated')
-      } catch (e) {
-        alert('Failed to add comment')
+      } catch (err: unknown) {
+        const axiosErr = err as AxiosError
+        const code = axiosErr.response?.status || '???'
+        const message = (axiosErr.response?.data as any)?.message || 'Failed to add comment'
+        this.errorMessage = `Error ${code}: ${message}`
+        this.showErrorModal = true
+      }
+    },
+    async reloadTask() {
+      try {
+        const res = await taskApi.get(`/tasks/${this.taskLocal.id}`)
+        this.taskLocal = res.data
+      } catch (err: unknown) {
+        const axiosErr = err as AxiosError
+        const code = axiosErr.response?.status || '???'
+        const message = (axiosErr.response?.data as any)?.message || 'Failed to reload task'
+        this.errorMessage = `Error ${code}: ${message}`
+        this.showErrorModal = true
       }
     },
     formatCommentDate(raw: string): string {

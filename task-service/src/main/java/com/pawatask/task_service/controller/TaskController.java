@@ -1,5 +1,6 @@
 package com.pawatask.task_service.controller;
 
+import com.pawatask.task_service.dto.CommentDto;
 import com.pawatask.task_service.dto.TaskDto;
 import com.pawatask.task_service.mapper.TaskMapper;
 import com.pawatask.task_service.model.Task;
@@ -47,5 +48,19 @@ public class TaskController {
     public ResponseEntity<?> toggleTaskDone(@PathVariable Long id) {
         taskService.toggleTaskDone(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<?> addComment(@PathVariable Long id,
+                                        @Valid @RequestBody CommentDto dto,
+                                        @RequestHeader("Authorization") String token) {
+        Task task = taskService.addComment(id, dto, token);
+        return ResponseEntity.ok(TaskMapper.toDto(task));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskDto> getTaskById(@PathVariable Long id) {
+        Task task = taskService.getTaskById(id);
+        return ResponseEntity.ok(TaskMapper.toDto(task));
     }
 }
