@@ -121,7 +121,7 @@ Password: 123
 
 ## 🧪 Testing
 
-The project includes basic unit and integration tests for both services. To run tests:
+The project includes basic unit and integration tests for both services.
 
 ## 📄 Assignment
 
