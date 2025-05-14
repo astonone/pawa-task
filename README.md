@@ -23,6 +23,9 @@ A simple task manager with user authentication, task creation, and comments. Bui
     - Create & update tasks
     - Toggle task status (done / not done)
     - Leave comments on tasks
+- Bonus:
+    - Filtering by priority
+    - Showing only done tasks
 
 ## 🐳 Docker Setup (recommended)
 
@@ -35,6 +38,7 @@ docker compose up --build
 ```
 
 This will spin up:
+
 - PostgreSQL database for user-service and task-service
 - Spring Boot-based `user-service` on port `8081`
 - Spring Boot-based `task-service` on port `8082`

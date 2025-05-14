@@ -15,8 +15,22 @@
         </span>
       </header>
 
+      <div class="filters">
+        <label class="filter-label">Filter by priority:</label>
+        <select v-model="priorityFilter" class="priority-filter">
+          <option>All</option>
+          <option>LOW</option>
+          <option>MEDIUM</option>
+          <option>HIGH</option>
+          <option>CRITICAL</option>
+        </select>
+
+        <label class="filter-label">Show only done tasks:</label>
+        <input v-model="onlyDone" type="checkbox" class="done-checkbox" />
+      </div>
+
       <AddTaskModal :visible="showModal" @close="showModal = false" @task-created="reloadTasks" />
-      <template v-if="tasks.length === 0 && !loadError">
+      <template v-if="filteredTasks.length === 0 && !loadError">
         <div class="empty-state">
           <p>
             You do not have any tasks
@@ -26,7 +40,7 @@
       </template>
       <template v-else>
         <TaskItem
-          v-for="t in tasks"
+          v-for="t in filteredTasks"
           :key="t.id"
           :task="t"
           :can-edit="isAuthenticated"
@@ -49,42 +63,50 @@ import TaskItem from '@/components/task/TaskItem.vue';
 import { mapGetters } from 'vuex';
 import AddTaskModal from '@/components/task/modal/AddTaskModal.vue';
 import { AxiosError } from 'axios';
+import { TaskDto } from '@/types/tasks';
 
 export default Vue.extend({
   name: 'TaskView',
   components: { TaskItem, AddTaskModal },
   data() {
     return {
-      tasks: [],
+      tasks: [] as TaskDto[],
       showModal: false,
-      loadError: ''
+      loadError: '',
+      priorityFilter: 'All',
+      onlyDone: false
     };
   },
-  async mounted() {
-    await this.fetchTasks();
+  computed: {
+    ...mapGetters('auth', ['isAuthenticated']),
+    filteredTasks(): TaskDto[] {
+      return this.tasks.filter((task: TaskDto) => {
+        const matchesPriority =
+          this.priorityFilter === 'All' || task.priority === this.priorityFilter;
+        const matchesDone = this.onlyDone ? task.done : true;
+        return matchesPriority && matchesDone;
+      });
+    }
+  },
+  mounted() {
+    this.fetchTasks();
   },
   methods: {
     async fetchTasks() {
       this.loadError = '';
-
       try {
         const res = await taskApi.get('/tasks');
         this.tasks = res.data;
       } catch (err: unknown) {
         const axiosErr = err as AxiosError;
-
         const status = axiosErr.response?.status;
         const msg = (axiosErr.response?.data as any)?.message || 'Unknown error';
-
         this.loadError = `Error ${status || '???'}: ${msg}`;
       }
     },
     async reloadTasks() {
       await this.fetchTasks();
     }
-  },
-  computed: {
-    ...mapGetters('auth', ['isAuthenticated'])
   }
 });
 </script>
@@ -138,8 +160,32 @@ export default Vue.extend({
 .new-task-btn.disabled {
   background-color: #ccc;
 }
+
 .new-task-btn.disabled:hover {
   cursor: default;
+}
+
+.filters {
+  margin-bottom: 20px;
+}
+
+.priority-filter {
+  margin-top: 4px;
+  margin-bottom: 12px;
+  padding: 8px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filter-label {
+  font-weight: bold;
+  display: block;
+  margin-top: 8px;
+}
+
+.done-checkbox {
+  margin-top: 8px;
 }
 
 .empty-state {
@@ -167,6 +213,7 @@ export default Vue.extend({
     font-size: 14px;
   }
 }
+
 @media (min-width: 768px) {
   .container {
     width: 500px;
