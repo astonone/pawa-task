@@ -78,6 +78,8 @@ cd task-service
 
 ### 3. Run the frontend
 
+Create file *.env* in the root directory and copy data from *.env.example*
+
 ```bash
 cd frontend
 npm install
