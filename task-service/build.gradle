@@ -43,3 +43,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootJar {
+	archiveFileName = 'task-service-0.0.1-SNAPSHOT.jar'
+}

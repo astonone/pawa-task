@@ -21,3 +21,6 @@ spring:
 
   application:
     name: task-service
+
+user-service:
+  url: http://localhost:8081

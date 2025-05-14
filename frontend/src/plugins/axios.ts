@@ -1,11 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
 
 export const userApi = axios.create({
-  baseURL: 'http://localhost:8081/api'
+  baseURL: process.env.VUE_APP_USER_API
 });
 
 export const taskApi = axios.create({
-  baseURL: 'http://localhost:8082/api'
+  baseURL: process.env.VUE_APP_TASK_API
 });
 
 const attachToken = (instance: AxiosInstance) => {

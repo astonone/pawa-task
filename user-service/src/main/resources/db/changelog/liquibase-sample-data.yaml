@@ -35,3 +35,11 @@ databaseChangeLog:
               - column:
                   name: full_name
                   value: "Irina Kulygina"
+  - changeSet:
+      id: 2-reset-user-sequence
+      author: viktor
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));

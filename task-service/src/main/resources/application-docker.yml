@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://pawa-task-postgres:5432/taskdb
+    username: postgres
+    password: postgres
+
+user-service:
+  url: http://user-service:8081

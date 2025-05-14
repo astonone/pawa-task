@@ -1,12 +1,16 @@
 package com.pawatask.task_service.client;
 
 import com.pawatask.task_service.dto.UserInfo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 
 @Component
 public class UserClient {
+
+    @Value("${user-service.url}")
+    private String userServiceUrl;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -16,7 +20,7 @@ public class UserClient {
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
         ResponseEntity<UserInfo> response = restTemplate.exchange(
-                "http://localhost:8081/api/users/me",
+                userServiceUrl + "/api/users/me",
                 HttpMethod.GET,
                 entity,
                 UserInfo.class

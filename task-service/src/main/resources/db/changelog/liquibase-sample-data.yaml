@@ -420,3 +420,12 @@ databaseChangeLog:
               - column:
                   name: task_id
                   valueNumeric: 10
+
+  - changeSet:
+      id: adjust-sequences
+      author: viktor
+      changes:
+        - sql:
+            sql: SELECT setval(pg_get_serial_sequence('tasks', 'id'), (SELECT MAX(id) FROM tasks));
+        - sql:
+            sql: SELECT setval(pg_get_serial_sequence('comments', 'id'), (SELECT MAX(id) FROM comments));

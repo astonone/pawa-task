@@ -1,21 +1,26 @@
 package com.pawatask.task_service.security;
 
+import com.pawatask.task_service.client.UserClient;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
 
+@Component
 public class JWTAuthFilter extends OncePerRequestFilter {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final UserClient userClient;
+
+    public JWTAuthFilter(UserClient userClient) {
+        this.userClient = userClient;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -37,26 +42,13 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         }
 
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", token);
-            HttpEntity<Void> entity = new HttpEntity<>(headers);
+            userClient.getCurrentUser(token);
 
-            ResponseEntity<String> userResponse = restTemplate.exchange(
-                    "http://localhost:8081/api/users/me", // URL юзер-сервиса
-                    HttpMethod.GET,
-                    entity,
-                    String.class
-            );
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken("remote-user", null, List.of());
 
-            if (userResponse.getStatusCode() == HttpStatus.OK) {
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken("remote-user", null, List.of());
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                filterChain.doFilter(request, response);
-            } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
