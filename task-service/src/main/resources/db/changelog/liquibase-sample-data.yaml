@@ -1,0 +1,422 @@
+databaseChangeLog:
+  - changeSet:
+      id: task-1
+      author: viktor
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+              - column:
+                  name: title
+                  value: Implement JWT authorization
+              - column:
+                  name: description
+                  value: Add JWT-based user authentication and secure all task-related endpoints.
+              - column:
+                  name: created_by
+                  value: Viktor K
+              - column:
+                  name: last_edited_by
+                  value: Viktor K
+              - column:
+                  name: todo_date
+                  valueDate: '2025-05-15T12:00:00'
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: is_done
+                  valueBoolean: false
+  - changeSet:
+      id: comment-1
+      author: viktor
+      changes:
+        - insert:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+              - column:
+                  name: text
+                  value: Don't forget to add expiration check!
+              - column:
+                  name: author
+                  value: Irina K
+              - column:
+                  name: created_at
+                  valueDate: '2025-05-14T12:00:00'
+              - column:
+                  name: task_id
+                  valueNumeric: 1
+  - changeSet:
+      id: comment-2
+      author: viktor
+      changes:
+        - insert:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 2
+              - column:
+                  name: text
+                  value: Consider using filters for token validation.
+              - column:
+                  name: author
+                  value: Viktor K
+              - column:
+                  name: created_at
+                  valueDate: '2025-05-14T12:00:00'
+              - column:
+                  name: task_id
+                  valueNumeric: 1
+  - changeSet:
+      id: task-2
+      author: viktor
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 2
+              - column:
+                  name: title
+                  value: Design task creation modal
+              - column:
+                  name: description
+                  value: Create a modal form to add new tasks, including validation.
+              - column:
+                  name: created_by
+                  value: Irina K
+              - column:
+                  name: last_edited_by
+                  value: Irina K
+              - column:
+                  name: todo_date
+                  valueDate: '2025-05-16T12:00:00'
+              - column:
+                  name: priority
+                  value: MEDIUM
+              - column:
+                  name: is_done
+                  valueBoolean: true
+  - changeSet:
+      id: task-3
+      author: viktor
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 3
+              - column:
+                  name: title
+                  value: Fix task list sorting
+              - column:
+                  name: description
+                  value: Ensure completed tasks are shown at the bottom of the list.
+              - column:
+                  name: created_by
+                  value: Viktor K
+              - column:
+                  name: last_edited_by
+                  value: Viktor K
+              - column:
+                  name: todo_date
+                  valueDate: '2025-05-17T12:00:00'
+              - column:
+                  name: priority
+                  value: LOW
+              - column:
+                  name: is_done
+                  valueBoolean: true
+  - changeSet:
+      id: comment-3
+      author: viktor
+      changes:
+        - insert:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 3
+              - column:
+                  name: text
+                  value: Double check sorting logic in backend.
+              - column:
+                  name: author
+                  value: Irina K
+              - column:
+                  name: created_at
+                  valueDate: '2025-05-14T12:00:00'
+              - column:
+                  name: task_id
+                  valueNumeric: 3
+  - changeSet:
+      id: task-4
+      author: viktor
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 4
+              - column:
+                  name: title
+                  value: Add comment support
+              - column:
+                  name: description
+                  value: Allow authorized users to leave comments on tasks.
+              - column:
+                  name: created_by
+                  value: Irina K
+              - column:
+                  name: last_edited_by
+                  value: Viktor K
+              - column:
+                  name: todo_date
+                  valueDate: '2025-05-18T12:00:00'
+              - column:
+                  name: priority
+                  value: CRITICAL
+              - column:
+                  name: is_done
+                  valueBoolean: false
+  - changeSet:
+      id: comment-4
+      author: viktor
+      changes:
+        - insert:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 4
+              - column:
+                  name: text
+                  value: Frontend is ready, just waiting for API.
+              - column:
+                  name: author
+                  value: Viktor K
+              - column:
+                  name: created_at
+                  valueDate: '2025-05-14T12:00:00'
+              - column:
+                  name: task_id
+                  valueNumeric: 4
+  - changeSet:
+      id: task-5
+      author: viktor
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 5
+              - column:
+                  name: title
+                  value: Improve error handling
+              - column:
+                  name: description
+                  value: Show proper error messages with HTTP code and description.
+              - column:
+                  name: created_by
+                  value: Viktor K
+              - column:
+                  name: last_edited_by
+                  value: Irina K
+              - column:
+                  name: todo_date
+                  valueDate: '2025-05-19T12:00:00'
+              - column:
+                  name: priority
+                  value: MEDIUM
+              - column:
+                  name: is_done
+                  valueBoolean: false
+  - changeSet:
+      id: task-6
+      author: viktor
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 6
+              - column:
+                  name: title
+                  value: Add input validation on backend
+              - column:
+                  name: description
+                  value: Ensure invalid dates and empty titles are rejected.
+              - column:
+                  name: created_by
+                  value: Irina K
+              - column:
+                  name: last_edited_by
+                  value: Irina K
+              - column:
+                  name: todo_date
+                  valueDate: '2025-05-20T12:00:00'
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: is_done
+                  valueBoolean: false
+  - changeSet:
+      id: task-7
+      author: viktor
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 7
+              - column:
+                  name: title
+                  value: Create user-friendly error modal
+              - column:
+                  name: description
+                  value: ''
+              - column:
+                  name: created_by
+                  value: Viktor K
+              - column:
+                  name: last_edited_by
+                  value: Viktor K
+              - column:
+                  name: todo_date
+                  valueDate: '2025-05-21T12:00:00'
+              - column:
+                  name: priority
+                  value: LOW
+              - column:
+                  name: is_done
+                  valueBoolean: false
+  - changeSet:
+      id: task-8
+      author: viktor
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 8
+              - column:
+                  name: title
+                  value: Add CORS configuration for dev
+              - column:
+                  name: description
+                  value: Allow frontend requests from localhost:8080.
+              - column:
+                  name: created_by
+                  value: Irina K
+              - column:
+                  name: last_edited_by
+                  value: Viktor K
+              - column:
+                  name: todo_date
+                  valueDate: '2025-05-22T12:00:00'
+              - column:
+                  name: priority
+                  value: LOW
+              - column:
+                  name: is_done
+                  valueBoolean: true
+  - changeSet:
+      id: task-9
+      author: viktor
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 9
+              - column:
+                  name: title
+                  value: Write README documentation
+              - column:
+                  name: description
+                  value: Explain how to run the app, and what unauthenticated users can
+                    do.
+              - column:
+                  name: created_by
+                  value: Viktor K
+              - column:
+                  name: last_edited_by
+                  value: Irina K
+              - column:
+                  name: todo_date
+                  valueDate: '2025-05-23T12:00:00'
+              - column:
+                  name: priority
+                  value: MEDIUM
+              - column:
+                  name: is_done
+                  valueBoolean: false
+  - changeSet:
+      id: task-10
+      author: viktor
+      changes:
+        - insert:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 10
+              - column:
+                  name: title
+                  value: Add initial data with Liquibase
+              - column:
+                  name: description
+                  value: Generate a few test tasks and comments using changeSet.
+              - column:
+                  name: created_by
+                  value: Irina K
+              - column:
+                  name: last_edited_by
+                  value: Irina K
+              - column:
+                  name: todo_date
+                  valueDate: '2025-05-24T12:00:00'
+              - column:
+                  name: priority
+                  value: HIGH
+              - column:
+                  name: is_done
+                  valueBoolean: false
+  - changeSet:
+      id: comment-5
+      author: viktor
+      changes:
+        - insert:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 5
+              - column:
+                  name: text
+                  value: Make sure comments reference valid task_id.
+              - column:
+                  name: author
+                  value: Viktor K
+              - column:
+                  name: created_at
+                  valueDate: '2025-05-14T12:00:00'
+              - column:
+                  name: task_id
+                  valueNumeric: 10

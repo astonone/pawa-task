@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-insert-sample-users
+      author: viktor
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: username
+                  value: "Viktor K"
+              - column:
+                  name: password
+                  # Password below is bcrypt-hashed version of "123"
+                  value: "$2a$10$f7OkAaHcS9aKD0eLIH6beuwj7obpeUK/VIeDR3huYOI/sozXsJTNi"
+              - column:
+                  name: full_name
+                  value: "Viktor Kulygin"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: username
+                  value: "Irina K"
+              - column:
+                  name: password
+                  # Password below is bcrypt-hashed version of "123"
+                  value: "$2a$10$vDtCjjp0dOg6SrRWJOk7weZahu6/.uC1jcjqveTgwmHCn.M1F01Ga"
+              - column:
+                  name: full_name
+                  value: "Irina Kulygina"
