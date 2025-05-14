@@ -126,14 +126,19 @@ export default Vue.extend({
       } catch (err: unknown) {
         const axiosErr = err as AxiosError
 
-        if (this.isRegister && axiosErr.response?.status === 409) {
-          this.errorMessage = 'User with this username already exists'
-        } else if (axiosErr.response?.status === 400) {
-          this.errorMessage = 'Please fill in all required fields'
+        const status = axiosErr.response?.status
+        const message = (axiosErr.response?.data as any)?.message || ''
+
+        if (this.isRegister && status === 409) {
+          this.errorMessage = `Error 409: ${message || 'User with this username already exists'}`
+        } else if (status === 400) {
+          this.errorMessage = `Error 400: ${message || 'Please fill in all required fields'}`
+        } else if (status === 401) {
+          this.errorMessage = `Error 401: ${message || 'Invalid credentials'}`
         } else {
-          this.errorMessage = this.isRegister
+          this.errorMessage = `Error ${status || '???'}: ${message || (this.isRegister
               ? 'Registration failed. Please try again.'
-              : 'Login failed. Please check your credentials.'
+              : 'Login failed. Please check your credentials.')}`
         }
       }
     }
@@ -218,5 +223,6 @@ input {
   color: #d33a2f;
   font-weight: bold;
   text-align: center;
+  font-size: 0.85em;
 }
 </style>

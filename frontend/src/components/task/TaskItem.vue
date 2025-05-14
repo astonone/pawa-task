@@ -46,6 +46,7 @@
           @close="showDetails = false"
           @edit-task="openEditModal"
       />
+      <ErrorModal v-if="showErrorModal" :message="errorMessage" @close="showErrorModal = false" />
     </div>
   </div>
 </template>
@@ -56,9 +57,11 @@ import {TaskDto} from "@/types/tasks";
 import EditTaskModal from "@/components/task/modal/EditTaskModal.vue";
 import {taskApi} from "@/plugins/axios";
 import TaskDetailsModal from "@/components/task/modal/TaskDetailsModal.vue";
+import {AxiosError} from "axios";
+import ErrorModal from "@/components/error/ErrorModal.vue";
 
 export default Vue.extend({
-  components: {TaskDetailsModal, EditTaskModal},
+  components: {ErrorModal, TaskDetailsModal, EditTaskModal},
   props: {
     task: {
       type: Object as () => TaskDto,
@@ -72,7 +75,9 @@ export default Vue.extend({
   data() {
     return {
       showEdit: false,
-      showDetails: false
+      showDetails: false,
+      showErrorModal: false,
+      errorMessage: '',
     }
   },
   methods: {
@@ -82,8 +87,12 @@ export default Vue.extend({
       try {
         await taskApi.patch(`/tasks/${this.task.id}/toggle`)
         this.$emit('task-updated')
-      } catch (err) {
-        alert('Failed to update task status')
+      } catch (err: unknown) {
+        const axiosErr = err as AxiosError
+        const code = axiosErr.response?.status || '???'
+        const message = (axiosErr.response?.data as any)?.message || 'Failed to update task status'
+        this.errorMessage = `Error ${code}: ${message}`
+        this.showErrorModal = true
       }
     },
     openEditModal() {

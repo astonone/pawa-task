@@ -114,19 +114,31 @@ export default Vue.extend({
           todoDate,
           priority: this.priority,
           comments: this.comments ? [
-            { text: this.comments }
+            { text: this.comments,
+              author: this.$store.state.auth.userInfo.username,
+            }
           ] : []
         })
 
         this.$emit('close')
         this.$emit('task-created')
       } catch (err: unknown) {
-        const axiosErr = err as AxiosError
+        const axiosErr = err as AxiosError;
 
-        if ((axiosErr.response?.data as any)?.message) {
-          this.errorMessage = (axiosErr.response?.data as any).message
+        if (axiosErr.response?.status === 401) {
+          await this.$store.dispatch('auth/logout')
+          this.$emit('close');
+          this.$root.$emit('session-expired');
+          return;
+        }
+
+        const code = axiosErr.response?.status;
+        const message = (axiosErr.response?.data as any)?.message;
+
+        if (code && message) {
+          this.errorMessage = `Error ${code}: ${message}`;
         } else {
-          this.errorMessage = 'Something went wrong. Please try again later.'
+          this.errorMessage = 'Something went wrong. Please try again later.';
         }
       }
     }
@@ -199,6 +211,7 @@ input, textarea, select {
   background-color: #d33a2f;
 }
 .error {
+  text-align: center;
   margin-top: 4px;
   color: #d33a2f;
   font-weight: bold;

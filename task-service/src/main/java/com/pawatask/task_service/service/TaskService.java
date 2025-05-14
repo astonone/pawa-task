@@ -10,6 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class TaskService {
@@ -19,6 +21,10 @@ public class TaskService {
 
     public Task createTask(TaskDto dto, String token) {
         UserInfo user = userClient.getCurrentUser(token);
+
+        if (dto.getTodoDate().toLocalDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Task date cannot be in the past");
+        }
 
         Task task = TaskMapper.fromDto(dto);
         task.setCreatedBy(user.getUsername());
@@ -37,6 +43,10 @@ public class TaskService {
 
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Task not found"));
+
+        if (dto.getTodoDate().toLocalDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Task date cannot be in the past");
+        }
 
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription());

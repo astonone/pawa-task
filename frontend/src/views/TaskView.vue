@@ -26,11 +26,12 @@
       </template>
       <template v-else>
         <TaskItem v-for="t in tasks" :key="t.id" :task="t" :canEdit="isAuthenticated" @task-updated="reloadTasks"/>
-      </template><template v-if="loadError">
-      <div class="empty-state error">
-        <p>⚠️ Failed to load tasks. Please try again later.</p>
-      </div>
-    </template>
+      </template>
+      <template v-if="loadError">
+        <div class="empty-state error">
+          <p>⚠️ {{ loadError }}</p>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -41,6 +42,7 @@ import {taskApi} from "@/plugins/axios";
 import TaskItem from "@/components/task/TaskItem.vue";
 import {mapGetters} from "vuex";
 import AddTaskModal from "@/components/task/modal/AddTaskModal.vue";
+import {AxiosError} from "axios";
 
 export default Vue.extend({
   name: 'TaskView',
@@ -49,25 +51,30 @@ export default Vue.extend({
     return {
       tasks: [],
       showModal: false,
-      loadError: false,
+      loadError: '',
     }
   },
   async mounted() {
-    try {
-      const res = await taskApi.get('/tasks')
-      this.tasks = res.data
-    } catch (e) {
-      this.loadError = true
-    }
+    await this.fetchTasks()
   },
   methods: {
-    async reloadTasks() {
+    async fetchTasks() {
+      this.loadError = ''
+
       try {
         const res = await taskApi.get('/tasks')
         this.tasks = res.data
-      } catch {
-        this.loadError = true
+      } catch (err: unknown) {
+        const axiosErr = err as AxiosError
+
+        const status = axiosErr.response?.status
+        const msg = (axiosErr.response?.data as any)?.message || 'Unknown error'
+
+        this.loadError = `Error ${status || '???'}: ${msg}`
       }
+    },
+    async reloadTasks() {
+      await this.fetchTasks()
     }
   },
   computed: {

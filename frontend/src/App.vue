@@ -37,7 +37,6 @@ export default Vue.extend({
 </script>
 
 <style>
-/* Global reset */
 html, body {
   margin: 0;
   padding: 0;
