@@ -15,22 +15,25 @@
         </span>
       </header>
 
-      <div class="filters">
-        <label class="filter-label">Filter by priority:</label>
-        <select v-model="priorityFilter" class="priority-filter">
-          <option>All</option>
-          <option>LOW</option>
-          <option>MEDIUM</option>
-          <option>HIGH</option>
-          <option>CRITICAL</option>
-        </select>
+      <label class="filter-label">Filter by priority</label>
+      <select v-model="priorityFilter" class="priority-filter">
+        <option>All</option>
+        <option>LOW</option>
+        <option>MEDIUM</option>
+        <option>HIGH</option>
+        <option>CRITICAL</option>
+      </select>
 
-        <label class="filter-label">Show only done tasks:</label>
-        <input v-model="onlyDone" type="checkbox" class="done-checkbox" />
-      </div>
+      <label class="filter-label">Filter by status</label>
+      <select v-model="doneFilter" class="priority-filter">
+        <option>All</option>
+        <option>Done</option>
+        <option>Not Done</option>
+      </select>
 
       <AddTaskModal :visible="showModal" @close="showModal = false" @task-created="reloadTasks" />
-      <template v-if="filteredTasks.length === 0 && !loadError">
+
+      <template v-if="tasks.length === 0 && !loadError">
         <div class="empty-state">
           <p>
             You do not have any tasks
@@ -38,6 +41,13 @@
           </p>
         </div>
       </template>
+
+      <template v-else-if="filteredTasks.length === 0 && !loadError">
+        <div class="empty-state">
+          <p>No tasks match the selected filters.</p>
+        </div>
+      </template>
+
       <template v-else>
         <TaskItem
           v-for="t in filteredTasks"
@@ -47,6 +57,7 @@
           @task-updated="reloadTasks"
         />
       </template>
+
       <template v-if="loadError">
         <div class="empty-state error">
           <p>⚠️ {{ loadError }}</p>
@@ -74,17 +85,20 @@ export default Vue.extend({
       showModal: false,
       loadError: '',
       priorityFilter: 'All',
-      onlyDone: false
+      doneFilter: 'All'
     };
   },
   computed: {
     ...mapGetters('auth', ['isAuthenticated']),
     filteredTasks(): TaskDto[] {
       return this.tasks.filter((task: TaskDto) => {
-        const matchesPriority =
+        const priorityMatch =
           this.priorityFilter === 'All' || task.priority === this.priorityFilter;
-        const matchesDone = this.onlyDone ? task.done : true;
-        return matchesPriority && matchesDone;
+        const doneMatch =
+          this.doneFilter === 'All' ||
+          (this.doneFilter === 'Done' && task.done) ||
+          (this.doneFilter === 'Not Done' && !task.done);
+        return priorityMatch && doneMatch;
       });
     }
   },
@@ -165,13 +179,8 @@ export default Vue.extend({
   cursor: default;
 }
 
-.filters {
-  margin-bottom: 20px;
-}
-
 .priority-filter {
-  margin-top: 4px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   padding: 8px;
   font-size: 14px;
   width: 100%;
@@ -180,12 +189,9 @@ export default Vue.extend({
 
 .filter-label {
   font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 4px;
   display: block;
-  margin-top: 8px;
-}
-
-.done-checkbox {
-  margin-top: 8px;
 }
 
 .empty-state {

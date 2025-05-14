@@ -25,7 +25,7 @@ A simple task manager with user authentication, task creation, and comments. Bui
     - Leave comments on tasks
 - Bonus:
     - Filtering by priority
-    - Showing only done tasks
+    - Filtering by status (done/ not done)
 
 ## 🐳 Docker Setup (recommended)
 
