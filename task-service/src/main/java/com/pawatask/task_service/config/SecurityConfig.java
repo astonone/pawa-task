@@ -1,5 +1,6 @@
 package com.pawatask.task_service.config;
 
+import com.pawatask.task_service.client.UserClient;
 import com.pawatask.task_service.security.JWTAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Profile("!test")
 @Configuration
 public class SecurityConfig {
+
+    @Bean
+    public JWTAuthFilter jwtAuthFilter(UserClient userClient) {
+        return new JWTAuthFilter(userClient);
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JWTAuthFilter jwtAuthFilter) throws Exception {
